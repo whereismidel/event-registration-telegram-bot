@@ -21,12 +21,11 @@ public class ScheduleController {
     private final TelegramSender telegramSender;
     private final UserRepository userRepository;
 
-    @Scheduled(cron = "0/30 0/1 * ? * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 0/1 * ? * *", zone = "Europe/Kiev")
     public void updateDataSheet() {
         List<User> userList = userRepository.findAll();
 
         sheetAPI.updateUserTable(userList, "1WjugTJe9ss4-OqHKmG-WifLKHrL69aXYwNQ8leqboW0", "Користувачі!A1");
-
     }
 
     @Scheduled(cron = "40 21 2 ? * *", zone = "Europe/Kiev")

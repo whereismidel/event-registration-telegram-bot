@@ -87,15 +87,18 @@ public class CommandController {
     }
 
 
-    @Handle(value = Action.COMMAND, command = "hide")
+    @Handle(value = Action.COMMAND, command = "block")
     @AdminAction
-    public void hideCommand(List<String> arguments, Update update) {
+    public void blockCommand(List<String> arguments, Update update) {
+
+
 
         if (arguments == null || arguments.size() != 1) {
+
             telegramSender.htmlMessage(update.getMessage().getChatId(),
                     """
                         Використання:
-                        /hide userId
+                        /block userId
                         """);
             return;
         }
@@ -107,7 +110,7 @@ public class CommandController {
             telegramSender.htmlMessage(update.getMessage().getChatId(),
                     """
                         Використання:
-                        /hide userId
+                        /block userId
                         """);
             return;
         }
