@@ -1,4 +1,4 @@
-package com.midel.eventregistationtelegrambot.telegram.action;
+package com.midel.eventregistrationtelegrambot.telegram.action;
 
 import lombok.Getter;
 import lombok.ToString;

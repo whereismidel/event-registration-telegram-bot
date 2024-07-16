@@ -1,4 +1,4 @@
-package com.midel.eventregistationtelegrambot.telegram.annotation;
+package com.midel.eventregistrationtelegrambot.telegram.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

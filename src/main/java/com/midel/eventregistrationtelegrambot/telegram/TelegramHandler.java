@@ -1,9 +1,9 @@
-package com.midel.eventregistationtelegrambot.telegram;
+package com.midel.eventregistrationtelegrambot.telegram;
 
-import com.midel.eventregistationtelegrambot.telegram.annotation.Action;
-import com.midel.eventregistationtelegrambot.telegram.annotation.AdminAction;
-import com.midel.eventregistationtelegrambot.telegram.annotation.Handle;
-import com.midel.eventregistationtelegrambot.telegram.annotation.TelegramController;
+import com.midel.eventregistrationtelegrambot.telegram.annotation.Action;
+import com.midel.eventregistrationtelegrambot.telegram.annotation.AdminAction;
+import com.midel.eventregistrationtelegrambot.telegram.annotation.Handle;
+import com.midel.eventregistrationtelegrambot.telegram.annotation.TelegramController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;

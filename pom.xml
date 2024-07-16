@@ -9,10 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.midel</groupId>
-    <artifactId>event-registation-telegram-bot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>event-registation-telegram-bot</name>
-    <description>event-registation-telegram-bot</description>
+    <artifactId>event-registration-telegram-bot</artifactId>
+    <version>0.1</version>
+    <name>event-registration-telegram-bot</name>
+    <description>event-registration-telegram-bot</description>
+
     <url/>
     <licenses>
         <license/>
@@ -64,7 +65,7 @@
 
         <dependency>
             <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-longpolling</artifactId>
+            <artifactId>telegrambots-springboot-longpolling-starter</artifactId>
             <version>7.7.0</version>
         </dependency>
         <dependency>
@@ -78,6 +79,25 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.23.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.23.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-sheets</artifactId>
+            <version>v4-rev493-1.23.0</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>

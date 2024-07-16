@@ -1,12 +1,16 @@
-package com.midel.eventregistationtelegrambot.telegram;
+package com.midel.eventregistrationtelegrambot.telegram;
 
-import com.midel.eventregistationtelegrambot.telegram.action.Command;
-import com.midel.eventregistationtelegrambot.telegram.annotation.Action;
+import com.midel.eventregistrationtelegrambot.telegram.action.Command;
+import com.midel.eventregistrationtelegrambot.telegram.annotation.Action;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
+import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -16,22 +20,40 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 @Getter
 @Component
 @Slf4j
-public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
+public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
-    @Value("${bot.username}")
-    private String username;
-
-    @Value("${bot.token}")
-    private String token;
+    private final String botUsername;
+    private final String botToken;
 
     private final TelegramClient telegramClient;
     private final TelegramHandler telegramHandler;
 
 
-    public TelegramBot(TelegramHandler telegramHandler) {
-        telegramClient = new OkHttpTelegramClient(token);
+    @Autowired
+    public TelegramBot(
+            @Value("${bot.token}") String botToken,
+            @Value("${bot.username}") String botUsername,
+            @Lazy TelegramHandler telegramHandler
+    ) {
+
+        this.botToken = botToken;
+        this.botUsername = botUsername;
 
         this.telegramHandler = telegramHandler;
+
+        telegramClient = new OkHttpTelegramClient(botToken);
+        log.info("Connected to Telegram bot @{}", getBotUsername());
+    }
+
+
+    @Override
+    public String getBotToken() {
+        return botToken;
+    }
+
+    @Override
+    public LongPollingUpdateConsumer getUpdatesConsumer() {
+        return this;
     }
 
     @Override
@@ -50,7 +72,6 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
 
             if (update.hasMessage()) {
                 handleMessage(update);
-                return;
             }
 
         } catch (Exception e) {
@@ -86,11 +107,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
     private void handleTextMessage(Update update) {
         try {
 
-            if (update.getMessage().getReplyToMessage() != null && update.getMessage().getReplyToMessage().getFrom().getIsBot()) {
-                telegramHandler.getResult(Action.REPLY_TO, "BY_USER_STATE", null, update);
-            } else {
-                telegramHandler.getResult(Action.COMMAND, Command.CommandIdentifier.START.getName(), null, update);
-            }
+            telegramHandler.getResult(Action.REPLY_TO, "BY_USER_STATE", null, update);
 
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
@@ -100,7 +117,7 @@ public class TelegramBot implements LongPollingSingleThreadUpdateConsumer {
     private void handleCommand(Update update, String text) {
         try {
 
-            Command command = new Command(text.replace(Command.MENTIONED + getUsername().toLowerCase(), ""));
+            Command command = new Command(text.replace(Command.MENTIONED + getBotUsername().toLowerCase(), ""));
             telegramHandler.getResult(Action.COMMAND, command.getIdentifier().getName(), command.getArguments(), update);
 
         } catch (IllegalArgumentException iae) {
