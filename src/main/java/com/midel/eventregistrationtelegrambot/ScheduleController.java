@@ -5,7 +5,6 @@ import com.midel.eventregistrationtelegrambot.google.SheetAPI;
 import com.midel.eventregistrationtelegrambot.repository.UserRepository;
 import com.midel.eventregistrationtelegrambot.telegram.TelegramSender;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ public class ScheduleController {
     private final TelegramSender telegramSender;
     private final UserRepository userRepository;
 
-    @Scheduled(cron = "0 0/1 * ? * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0/10 0/1 * ? * *", zone = "Europe/Kiev")
     public void updateDataSheet() {
         List<User> userList = userRepository.findAll();
 
