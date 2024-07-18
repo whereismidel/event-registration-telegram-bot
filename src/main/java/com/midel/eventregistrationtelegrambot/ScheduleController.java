@@ -20,7 +20,7 @@ public class ScheduleController {
     private final TelegramSender telegramSender;
     private final UserRepository userRepository;
 
-    @Scheduled(cron = "0/10 0/1 * ? * *", zone = "Europe/Kiev")
+    @Scheduled(cron = "0 0/2 * ? * *", zone = "Europe/Kiev")
     public void updateDataSheet() {
         List<User> userList = userRepository.findAll();
 
