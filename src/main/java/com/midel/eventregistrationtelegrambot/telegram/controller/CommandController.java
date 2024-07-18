@@ -237,11 +237,13 @@ public class CommandController {
                 message = """
                         <b>А поки чекаєш результатів..</b>
                         
-                        Підпишись на канал вступника, щоб точно нічого  не пропустити про вступ. А також долучайся до чату абітурієнтів, щоб в режимі онлайн отримувати відповіді про навчання та двіж в НАУ від наших студентів.
+                        <b>Підпишись</b> на канал вступника, щоб точно нічого не пропустити про вступ.
                         
-                        <b><a href="https://t.me/pknau">Вступник НАУ</a> | <a href="https://nau.edu.ua">Чат абітурієнтів(нема лінки)</a></b>
+                        Також <b>долучайся до чату</b> абітурієнтів, щоб в режимі онлайн отримувати відповіді про навчання та двіж в НАУ від наших студентів.
+                        
+                        <b><a href="https://t.me/pknau">Вступник НАУ</a> | <a href="https://t.me/nau_abit_chat">Чат абітурієнтів</a></b>
                         """;
-                telegramSender.htmlMessageWithBottomPhoto(update.getMessage().getChatId(), message, "https://telegra.ph/file/1df653ea1fa18694f4777.jpg");
+                telegramSender.htmlMessageWithBottomPhoto(update.getMessage().getChatId(), message, "https://telegra.ph/file/13e6fded376bb93add4c2.png");
             }
         }
     }
