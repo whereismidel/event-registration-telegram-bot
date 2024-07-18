@@ -243,7 +243,7 @@ public class CommandController {
                         
                         <b><a href="https://t.me/pknau">Вступник НАУ</a> | <a href="https://t.me/nau_abit_chat">Чат абітурієнтів</a></b>
                         """;
-                telegramSender.htmlMessageWithBottomPhoto(update.getMessage().getChatId(), message, "https://telegra.ph/file/13e6fded376bb93add4c2.png");
+                telegramSender.htmlMessageWithBottomPhoto(update.getMessage().getChatId(), message, "https://telegra.ph/file/74a9eaa55a209240c062c.png");
             }
         }
     }
