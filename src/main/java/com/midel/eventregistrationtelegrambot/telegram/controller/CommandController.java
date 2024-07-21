@@ -11,7 +11,14 @@ import com.midel.eventregistrationtelegrambot.telegram.annotation.Handle;
 import com.midel.eventregistrationtelegrambot.telegram.annotation.TelegramController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.LinkPreviewOptions;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -32,18 +39,6 @@ public class CommandController {
         User user = userRepository.getUserById(update.getMessage().getFrom().getId()).orElse(null);
 
         if (user == null) {
-//            telegramSender.htmlMessage(update.getMessage().getChatId(), """
-//                    <b>Привіт! Я допоможу тобі зареєструватися у розіграші твоєї першої стипендії за вступ до НАУ.</b>
-//
-//                    Випускники НАУ створили фонд, щоб <b><u>розіграти 20 перших стипендій у розмірі 3000 грн</u></b> серед тих, хто стане студентом цього року.
-//
-//                    <u>Як стати одним/однією з 20 переможців:</u>
-//                    1. <b>Пройти реєстрацію</b> у цьому боті
-//                    2. <b>Вступити до НАУ</b> на бакалавра на базі ПСЗО
-//                    3. <b>Не блокувати бота</b> до 1 вересня, адже саме через нього ми зв'яжемося з переможцями
-//
-//                    📄<b><a href="https://vstup2024.nau.edu.ua/rules">Правила розіграшу</a></b>
-//                    """);
 
             telegramSender.htmlMessage(update.getMessage().getChatId(), """
                     Для реєстрації тебе як учасника/ці нам потрібно твоє <i>прізвище, ім'я та номер телефону</i>. Надаючи цю інформацію ти автоматично даєш згоду на її обробку в рамках проведення вступної кампанії НАУ.
@@ -187,17 +182,30 @@ public class CommandController {
                                     .replaceFirst("^\\+?38", "")
                         );
 
-                        telegramSender.htmlMessage(
-                                update.getMessage().getChatId(),
-                        String.format("""
-                        <b>Дякую! Тепер ти приймаєш участь у Акції Моя перша стипендія</b>
+                        telegramSender.send(
+                            SendMessage.builder()
+                                .chatId(update.getMessage().getChatId())
+                                .text(String.format("""
+                                    <b>Дякую! Тепер ти приймаєш участь у Акції Моя перша стипендія</b>
+            
+                                    Твої дані:
+                                    Ім'я та прізвище - %s
+                                    Номер телефону - %s
+            
+                                    <i>Не блокуй бота, адже саме тут 1 вересня ми анонсуємо переможця: <b>можливо це будеш саме ти!</b></i>
+                                    """, user.getFirstName() + " " + user.getLastName(), user.getPhoneNumber())
+                                )
+                                .parseMode("html")
+                                .disableWebPagePreview(true)
+                                .replyMarkup(
+                                    ReplyKeyboardMarkup.builder()
+                                        .keyboardRow(new KeyboardRow("Корисні посилання"))
+                                        .resizeKeyboard(true)
+                                    .build()
+                                )
+                            .build()
+                        );
 
-                        Твої дані:
-                        Ім'я та прізвище - %s
-                        Номер телефону - %s
-
-                        <i>Не блокуй бота, адже саме тут 1 вересня ми анонсуємо переможця: <b>можливо це будеш саме ти!</b></i>
-                        """, user.getFirstName() + " " + user.getLastName(), user.getPhoneNumber()));
                         yield State.REGISTERED;
                     }
 
@@ -241,9 +249,37 @@ public class CommandController {
                         
                         Також <b>долучайся до чату</b> абітурієнтів, щоб в режимі онлайн отримувати відповіді про навчання та двіж в НАУ від наших студентів.
                         
-                        <b><a href="https://t.me/pknau">Вступник НАУ</a> | <a href="https://t.me/nau_abit_chat">Чат абітурієнтів</a></b>
+                        <b><a href="https://t.me/pknau">Вступник НАУ</a> | <a href="https://t.me/nau_vstup_chat">Чат абітурієнтів</a></b>
                         """;
-                telegramSender.htmlMessageWithBottomPhoto(update.getMessage().getChatId(), message, "https://telegra.ph/file/74a9eaa55a209240c062c.png");
+
+                telegramSender.send(
+                    SendMessage.builder()
+                        .chatId(update.getMessage().getChatId())
+                        .text(message)
+                        .linkPreviewOptions(LinkPreviewOptions.builder().urlField("https://telegra.ph/file/74a9eaa55a209240c062c.png").build())
+                        .replyMarkup(
+                            InlineKeyboardMarkup.builder()
+                                .keyboard(
+                                    List.of(
+                                        new InlineKeyboardRow(
+                                            InlineKeyboardButton.builder()
+                                                .text("Алгоритм вступу")
+                                                .url("https://pk.nau.edu.ua/alhorytm-vstupu-do-nau-2024/")
+                                            .build()
+                                        ),
+                                        new InlineKeyboardRow(
+                                            InlineKeyboardButton.builder()
+                                                .text("Електронний кабінет вступника")
+                                                .url("https://cabinet.edbo.gov.ua/login")
+                                            .build()
+                                        )
+                                    )
+                                )
+                            .build()
+                        )
+                        .parseMode("html")
+                    .build()
+                );
             }
         }
     }

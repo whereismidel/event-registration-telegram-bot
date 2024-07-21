@@ -6,13 +6,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.CopyMessage;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
-import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.LinkPreviewOptions;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -35,33 +30,6 @@ public class TelegramSender {
                 .text(text)
                 .parseMode("html")
                 .disableWebPagePreview(true)
-            .build()
-        );
-
-    }
-
-    public Integer htmlForceReplyMessage(Long chatId, String text) {
-
-        return (Integer) send(
-            SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .parseMode("html")
-                .disableWebPagePreview(true)
-                .replyMarkup(ForceReplyKeyboard.builder().forceReply(true).build())
-            .build()
-        );
-
-    }
-
-    public Integer htmlMessageWithBottomPhoto(Long chatId, String text, String link) {
-
-        return (Integer) send(
-            SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .linkPreviewOptions(LinkPreviewOptions.builder().urlField(link).build())
-                .parseMode("html")
             .build()
         );
 
@@ -108,38 +76,6 @@ public class TelegramSender {
 
     }
 
-    public void sendDocument(Long chatId, InputFile inputFile) {
-
-        try {
-            telegramBot.getTelegramClient().execute(
-                SendDocument.builder()
-                    .chatId(chatId)
-                    .document(inputFile)
-                .build()
-            );
-        } catch (TelegramApiException e) {
-            log.warn("Failed to send document: {}", e.getMessage());
-        }
-
-    }
-
-    public Integer inlineKeyboard(Long chatId, String title, InlineKeyboardMarkup inlineKeyboardMarkup) {
-
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(chatId)
-                .text(title)
-                .parseMode("html")
-                .disableWebPagePreview(true)
-                .build();
-
-        if (inlineKeyboardMarkup != null) {
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-        }
-
-        return (Integer) send(sendMessage);
-
-    }
-
     public void deleteMessage(Long chatId, Integer messageId) {
 
         send(
@@ -151,7 +87,7 @@ public class TelegramSender {
 
     }
 
-    private Object send(BotApiMethod<?> method) {
+    public Object send(BotApiMethod<?> method) {
 
         try {
             switch (method) {

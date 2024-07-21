@@ -33,3 +33,5 @@ build/
 .vscode/
 /src/main/resources/application-test.properties
 /docker-compose.yml
+/src/main/resources/credentials.json
+/tokens/
