@@ -57,7 +57,7 @@ public class ScheduleController {
     public void sendScheduleStats() {
         sendStats(List.of(
 //            List.of(787943933L),
-            List.of(-1001316709142L, 1923L)
+            List.of(-1002221505561L, 5L)
         ));
     }
 
