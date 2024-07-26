@@ -22,22 +22,41 @@ public class TelegramSender {
 
     private final TelegramBot telegramBot;
 
-    public Integer htmlMessage(Long chatId, String text) {
+    public Integer htmlMessage(Long chatId, Integer threadId, String text) {
+
+        if (threadId == null) {
+            return htmlMessage(chatId, text);
+        }
 
         return (Integer) send(
             SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
                 .parseMode("html")
+                .messageThreadId(threadId)
                 .disableWebPagePreview(true)
             .build()
         );
 
     }
 
-    public void forwardMessage(Long fromChat, int messageId, Long toChat) {
+    public Integer htmlMessage(Long chatId, String text) {
 
-        send(
+        return (Integer) send(
+                SendMessage.builder()
+                        .chatId(chatId)
+                        .text(text)
+                        .parseMode("html")
+                        .disableWebPagePreview(true)
+                        .build()
+        );
+
+    }
+
+    public boolean forwardMessage(Long fromChat, int messageId, Long toChat) {
+
+
+        Object sendRequest = send(
             CopyMessage.builder()
                 .fromChatId(fromChat)
                 .chatId(toChat)
@@ -45,6 +64,7 @@ public class TelegramSender {
             .build()
         );
 
+        return sendRequest != null;
     }
 
     public Integer requestContact(Long chatId, String text) {
@@ -96,6 +116,8 @@ public class TelegramSender {
                 case SendPoll sendPoll -> { return telegramBot.getTelegramClient().execute(sendPoll); }
                 default -> telegramBot.getTelegramClient().execute(method);
             }
+
+            return true;
 
         } catch (TelegramApiException e) {
             log.warn("Failed to send message - {}. Method: {}", e.getMessage(), method);

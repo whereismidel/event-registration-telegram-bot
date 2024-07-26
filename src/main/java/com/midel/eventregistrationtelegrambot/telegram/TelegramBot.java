@@ -71,6 +71,12 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
 //            }
 
             if (update.hasMessage()) {
+
+                if (!update.getMessage().getChat().isUserChat()) {
+                    System.out.println(update);
+                    return;
+                }
+
                 handleMessage(update);
             }
 
@@ -146,9 +152,11 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
         }
 
         if (message.getChat().getType().equals("private")) {
-            log.info("{}from user @{}(id={}): {}\n{}", prefix, from.getUserName(), from.getId(), text, update);
+//            log.info("{}from user @{}(id={}): {}\n{}", prefix, from.getUserName(), from.getId(), text, update);
+            log.info("{}from user @{}(id={}): {}", prefix, from.getUserName(), from.getId(), text);
         } else {
-            log.info("{}from group \"{}\"(id={}), user @{}(id={}): {}\n{}", prefix, message.getChat().getTitle(), message.getChat().getId(), from.getUserName(), from.getId(), text, update);
+//            log.info("{}from group \"{}\"(id={}), user @{}(id={}): {}\n{}", prefix, message.getChat().getTitle(), message.getChat().getId(), from.getUserName(), from.getId(), text, update);
+            log.info("{}from group \"{}\"(id={}), user @{}(id={}): {}", prefix, message.getChat().getTitle(), message.getChat().getId(), from.getUserName(), from.getId(), text);
         }
     }
 }

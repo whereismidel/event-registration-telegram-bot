@@ -1,5 +1,6 @@
 package com.midel.eventregistrationtelegrambot.telegram.controller;
 
+import com.midel.eventregistrationtelegrambot.ScheduleController;
 import com.midel.eventregistrationtelegrambot.entity.User;
 import com.midel.eventregistrationtelegrambot.entity.enums.State;
 import com.midel.eventregistrationtelegrambot.entity.enums.Status;
@@ -32,6 +33,7 @@ public class CommandController {
 
     private final TelegramSender telegramSender;
     private final UserRepository userRepository;
+    private final ScheduleController scheduleController;
 
     @Handle(value = Action.COMMAND, command = "start")
     public void startCommand(List<String> arguments, Update update) {
@@ -78,10 +80,17 @@ public class CommandController {
         try (ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1)) {
             for (int i = 0; i < userList.size(); i++) {
                 int finalI = i;
-                scheduler.schedule(() ->
-                                telegramSender.forwardMessage(update.getMessage().getChatId(), update.getMessage().getReplyToMessage().getMessageId(), userList.get(finalI).getId()),
-                        delay * i,
-                        TimeUnit.MILLISECONDS
+                scheduler.schedule(() -> {
+                        try {
+                            boolean result = telegramSender.forwardMessage(update.getMessage().getChatId(), update.getMessage().getReplyToMessage().getMessageId(), userList.get(finalI).getId());
+                            if (!result && userList.get(finalI).getStatus().equals(Status.ACTIVE)) {
+                                userList.get(finalI).setStatus(Status.BLOCKED);
+                                userRepository.save(userList.get(finalI));
+                            }
+                        } catch (Exception e) {
+                            log.warn("Error while send scheduling message.", e);
+                        }
+                    }, delay * i, TimeUnit.MILLISECONDS
                 );
             }
 
@@ -92,12 +101,18 @@ public class CommandController {
         }
     }
 
+    @Handle(value = Action.COMMAND, command = "stats")
+    @AdminAction
+    public void statsCommand(List<String> arguments, Update update) {
+        scheduleController.sendStats(List.of(
+                List.of(update.getMessage().getChatId())
+        ));
+    }
+
 
     @Handle(value = Action.COMMAND, command = "block")
     @AdminAction
     public void blockCommand(List<String> arguments, Update update) {
-
-
 
         if (arguments == null || arguments.size() != 1) {
 
@@ -209,7 +224,14 @@ public class CommandController {
                         yield State.REGISTERED;
                     }
 
-                    case REGISTERED -> State.REGISTERED;
+                    case REGISTERED -> {
+
+                        if (user.getStatus().equals(Status.BLOCKED)) {
+                            user.setStatus(Status.ACTIVE);
+                        }
+
+                        yield State.REGISTERED;
+                    }
                 }
         );
 

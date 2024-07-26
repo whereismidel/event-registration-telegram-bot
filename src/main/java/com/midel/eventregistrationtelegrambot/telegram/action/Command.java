@@ -28,6 +28,11 @@ public class Command {
                 "Заблокувати користувача",
                 """
                 ;)
+                """),
+        STATS("stats",
+                "Надати статистику по реєстраціям",
+                """
+                ;)
                 """);
 
         private final String name;

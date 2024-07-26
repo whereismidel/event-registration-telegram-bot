@@ -82,7 +82,7 @@ public class SheetAPI {
                     .setValueInputOption("RAW")
                     .execute();
 
-            log.info("Data written to the spreadsheet.");
+//            log.info("Data written to the spreadsheet.");
         } catch (Exception e) {
             log.error("Failed to update user table.", e);
         }

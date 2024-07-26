@@ -19,6 +19,11 @@
       "name": "google.credentials",
       "type": "java.lang.String",
       "description": "Description for google.credentials."
+    },
+    {
+      "name": "google.sheet-id",
+      "type": "java.lang.String",
+      "description": "Description for google.sheet-id."
     }
   ]
 }
