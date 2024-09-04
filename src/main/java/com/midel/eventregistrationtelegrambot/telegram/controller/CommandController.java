@@ -40,22 +40,32 @@ public class CommandController {
 
         User user = userRepository.getUserById(update.getMessage().getFrom().getId()).orElse(null);
 
-        if (user == null) {
+//        if (user == null) {
+//
+//            telegramSender.htmlMessage(update.getMessage().getChatId(), """
+//                    Для реєстрації тебе як учасника/ці нам потрібно твоє <i>прізвище, ім'я та номер телефону</i>. Надаючи цю інформацію ти автоматично даєш згоду на її обробку в рамках проведення вступної кампанії НАУ.
+//
+//                    <u>Не хвилюйся, ці дані захищені та потрібні лише для визначення переможця.</u>
+//                    """);
+//
+//            user = User.builder()
+//                    .id(update.getMessage().getFrom().getId())
+//                    .state(State.NAME)
+//                    .status(Status.ACTIVE)
+//                    .username(update.getMessage().getFrom().getUserName())
+//                    .build();
+//
+//            user = userRepository.save(user);
+//        }
 
+        if (user == null) {
             telegramSender.htmlMessage(update.getMessage().getChatId(), """
-                    Для реєстрації тебе як учасника/ці нам потрібно твоє <i>прізвище, ім'я та номер телефону</i>. Надаючи цю інформацію ти автоматично даєш згоду на її обробку в рамках проведення вступної кампанії НАУ.
+                    <b>Реєстрація завершена!</b>
                     
-                    <u>Не хвилюйся, ці дані захищені та потрібні лише для визначення переможця.</u>
+                    Результати будуть оголошені згодом через цього бота.
                     """);
 
-            user = User.builder()
-                    .id(update.getMessage().getFrom().getId())
-                    .state(State.NAME)
-                    .status(Status.ACTIVE)
-                    .username(update.getMessage().getFrom().getUserName())
-                    .build();
-
-            user = userRepository.save(user);
+            return;
         }
 
         handleState(update, user);

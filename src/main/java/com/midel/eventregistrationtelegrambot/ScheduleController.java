@@ -52,14 +52,14 @@ public class ScheduleController {
     }
 
 
-    @Scheduled(cron = "0 0 10/12 ? * *", zone = "Europe/Kiev")
-//    @Scheduled(cron = "0/30 0/1 * ? * *", zone = "Europe/Kiev")
-    public void sendScheduleStats() {
-        sendStats(List.of(
-//            List.of(787943933L),
-            List.of(-1002221505561L, 5L)
-        ));
-    }
+//    @Scheduled(cron = "0 0 10/12 ? * *", zone = "Europe/Kiev")
+////    @Scheduled(cron = "0/30 0/1 * ? * *", zone = "Europe/Kiev")
+//    public void sendScheduleStats() {
+//        sendStats(List.of(
+////            List.of(787943933L),
+//            List.of(-1002221505561L, 5L)
+//        ));
+//    }
 
     public void sendStats(List<List<Long>> chatsAndThreadId) {
         try {
